@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package users;
+
+message Empty {}
+
+message NullValue {
+    string message = 1;
+}
+
+message Error {
+    string message = 1;
+}
+
+message User {
+    string firstName = 1;
+    string lastName =  2;
+    string designation = 3;
+    string email = 5;
+    int32 logins = 6;
+    string displayPicture = 7;
+}
+
+message UsersList {
+    repeated User users = 1;
+}
+
+message CreateUserRequest {
+    User user = 1;
+}
+
+message CreateUserResponse { 
+    oneof user_or_error{
+        User user = 1;
+        Error error = 2;
+    }
+}
+
+message GetUserByEmailRequest {
+    string email = 1;
+}
+
+message GetUserByEmailResponse {
+    oneof user_or_null{
+        User user = 1;
+        NullValue null = 2;
+    }
+}
+
+message EditUserRequest {
+    string email = 1;
+    User user = 2;
+}
+
+message EditUserResponse {
+    oneof user_or_error {
+        User user = 1;
+        Error error = 2;
+    }
+}
+
+message DeleteUserRequest {
+    string email = 1;
+}
+
+message DeleteUserResponse {
+    oneof user_or_error {
+        User user = 1;
+        Error error = 2;
+    }
+}
+
+service UserService {
+    rpc getAllUsers(Empty) returns (UsersList) {}
+    rpc getUserByEmail(GetUserByEmailRequest) returns (GetUserByEmailResponse) {}
+    rpc createUser(CreateUserRequest) returns (CreateUserResponse) {}
+    rpc editUserByEmail(EditUserRequest) returns (EditUserResponse) {}
+    rpc deleteUserByEmail(DeleteUserRequest) returns (DeleteUserResponse) {}
+}
